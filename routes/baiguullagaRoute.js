@@ -39,9 +39,8 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
           req.body.baaziinNer,
           true,
           process.env.DB_HOST,
-          process.env.DB_NAME,
-          process.env.DB_USER,
           process.env.DB_PASS,
+          process.env.DB_USER,
         );
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
