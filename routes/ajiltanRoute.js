@@ -328,7 +328,7 @@ router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.get("/ustsanBarimtTurees", tokenShalgakh, async (req, res, next) => {
+router.get("/ustsanBarimtIrts", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     const body = req.query;
@@ -383,7 +383,7 @@ router.get("/licenseOgnooAvya", tokenShalgakh, async (req, res, next) => {
   try {
     request.get(
       process.env.ADMIN_URL + "/baiguullagiinDuusakhKhugatsaaAvya",
-      { json: true, body: { register: req.body.register, system: "Turees" } },
+      { json: true, body: { register: req.body.register, system: "irts" } },
       (err, res1, body) => {
         if (err) next(err);
         else {

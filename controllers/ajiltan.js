@@ -238,7 +238,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
       process.env.ADMIN_URL + "/erkhiinMedeelelAvya",
       {
         json: true,
-        body: { system: "Turees", register: baiguullaga.register },
+        body: { system: "irts", register: baiguullaga.register },
       },
       (err, res1, body) => {
         if (err) next(err);
@@ -281,7 +281,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
           );
           if (!!baiguullaga && !!baiguullaga.register) {
             duusakhOgnooAvya(
-              { register: baiguullaga.register, system: "Turees" },
+              { register: baiguullaga.register, system: "irts" },
               async (khariu) => {
                 try {
                   if (khariu.success) {
