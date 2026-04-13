@@ -17,7 +17,8 @@
     "node-cron": "^3.0.3",
     "qrcode": "^1.5.4",
     "redis": "^5.5.6",
-    "zevbackv2": "^1.1.58"
+    "zevbackv2": "^1.1.58",
+    "mongoose": "^6.9.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
