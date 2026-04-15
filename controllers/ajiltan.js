@@ -52,12 +52,6 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   // User-agent шалгах
   const userAgent = req.headers["user-agent"] || "";
   console.log("User-Agent: ", userAgent);
-  const isMobile =
-    /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
-      userAgent,
-    );
-
-  if (!isMobile) throw new aldaa("Зөвхөн утасны браузераас нэвтрэх боломжтой");
   const io = req.app.get("socketio");
   const { db } = require("zevbackv2");
   const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
@@ -71,6 +65,15 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+  if (ajiltan.erkh !== "Admin") {
+    const isMobile =
+      /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+        userAgent,
+      );
+
+    if (!isMobile)
+      throw new aldaa("Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой");
+  }
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     ajiltan.baiguullagiinId,
   );
