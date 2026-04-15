@@ -66,6 +66,14 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   if (ajiltan.erkh !== "Admin") {
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    console.log("IP хаяг:", ip);
+    const geoRes = await fetch(`http://ip-api.com/json/${ip}`);
+    const geo = await geoRes.json();
+    console.log("Улс:", geo.country);
+    console.log("Хот:", geo.city);
+    console.log("ISP (интернэт үүсгэл):", geo.isp); // "MobiCom", "Unitel" гэх мэт
+    console.log("Байгууллага:", geo.org);
     const isMobile =
       /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
         userAgent,
