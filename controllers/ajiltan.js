@@ -76,7 +76,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
       /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
         userAgent,
       );
-
+    console.log("IP: ", cleanIP);
+    console.log("isMobile: ", isMobile);
     if (!isMobile)
       throw new aldaa("Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой");
     if (!allowedIPs.includes(cleanIP))
