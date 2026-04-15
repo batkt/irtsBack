@@ -195,6 +195,8 @@ router.post(
         ).countDocuments(queryAjiltan);
         element.odoogiin = ajiltanErkhiinToo;
       }
+      console.log(JSON.stringify(moduluud));
+      console.log(JSON.stringify(req.body.register));
       res.send(moduluud);
     } catch (error) {
       next(error);
