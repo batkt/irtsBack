@@ -71,6 +71,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     const rawIP =
       req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
       req.socket.remoteAddress;
+    console.log("Raw IP: ", rawIP);
     const ip = rawIP?.replace("::ffff:", "");
     const isMobile =
       /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
