@@ -49,6 +49,15 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
+  // User-agent шалгах
+  const userAgent = req.headers["user-agent"] || "";
+  console.log("User-Agent: ", userAgent);
+  const isMobile =
+    /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+      userAgent,
+    );
+
+  if (!isMobile) throw new aldaa("Зөвхөн утасны браузераас нэвтрэх боломжтой");
   const io = req.app.get("socketio");
   const { db } = require("zevbackv2");
   const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
