@@ -67,7 +67,11 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   if (ajiltan.erkh !== "Admin") {
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    // IP зөв авах
+    const rawIP =
+      req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+      req.socket.remoteAddress;
+    const ip = rawIP?.replace("::ffff:", "");
     const isMobile =
       /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
         userAgent,
