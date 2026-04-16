@@ -108,6 +108,7 @@ router.post("/baiguullagaAvya", (req, res, next) => {
       register: req.body.register,
     })
     .then((result) => {
+      console.log(result);
       res.send(result);
     })
     .catch((err) => {
