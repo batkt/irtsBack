@@ -82,6 +82,16 @@ const baiguullagaSchema = new Schema(
             planZurag: String,
           },
         ],
+        ajillakhUdruud: [
+          {
+            neekhTsag: String,
+            khaakhTsag: String,
+            tsainiiNeekhTsag: String,
+            tsainiiTsag: Number,
+            darakhKhugatsaa: Number,
+            udruud: Array,
+          },
+        ],
       },
     ],
     davkhar: Number,

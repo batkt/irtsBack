@@ -62,11 +62,11 @@ async function irtsBurtgel(req, res) {
         standartIreh.setHours(8, 30, 0, 0);
         const khotsorsonMinut = Math.max(
           0,
-          Math.round((odoo - standartIreh) / 60000)
+          Math.round((odoo - standartIreh) / 60000),
         );
         const ertIrsenMinut = Math.max(
           0,
-          Math.round((standartIreh - odoo) / 60000)
+          Math.round((standartIreh - odoo) / 60000),
         );
 
         if (bichleg) {
@@ -112,9 +112,7 @@ async function irtsBurtgel(req, res) {
             message: "Өнөөдөр аль хэдийн гарсан бүртгэгдсэн байна.",
           });
         }
-        const ajillasanMinut = Math.round(
-          (odoo - bichleg.irsenTsag) / 60000
-        );
+        const ajillasanMinut = Math.round((odoo - bichleg.irsenTsag) / 60000);
         bichleg.yawsanTsag = odoo;
         bichleg.ajillasanMinut = ajillasanMinut;
         bichleg.garsanTurul = burtgesenTurul;
@@ -166,7 +164,9 @@ async function irtsBurtgel(req, res) {
       }
 
       default:
-        return res.status(400).json({ success: false, message: "Тодорхойгүй QR төрөл." });
+        return res
+          .status(400)
+          .json({ success: false, message: "Тодорхойгүй QR төрөл." });
     }
   } catch (err) {
     console.error("[irtsBurtgel]", err);
@@ -174,4 +174,24 @@ async function irtsBurtgel(req, res) {
   }
 }
 
-module.exports = { irtsBurtgel };
+async function getUnuudriinIrts(req, res, next) {
+  try {
+    if (!req.body.nevtersenAjiltniiToken || !req.body.nevtersenAjiltniiToken.id)
+      throw Error("Токены мэдээлэл дутуу байна!");
+    var unuudur = new Date();
+    var unuudriinIrts = await Irts.findOne({
+      ognoo: new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+      ),
+      ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+      baiguullagiinId: req.body.baiguullagiinId,
+    });
+    res.send(unuudriinIrts);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { irtsBurtgel, getUnuudriinIrts };

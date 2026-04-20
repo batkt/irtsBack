@@ -1,13 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const { irtsBurtgel } = require("../controllers/irtsController");
+const {
+  irtsBurtgel,
+  getUnuudriinIrts,
+} = require("../controllers/irtsController");
 const { mobileOnlyGuard, wifiGuard } = require("../middleware/guards");
+const {
+  tokenShalgakh,
+  crudWithFile,
+  crud,
+  UstsanBarimt,
+  db,
+} = require("zevbackv2");
 
-/**
- * POST /api/irts/burtgel
- * QR-аар ирц бүртгэх
- * Шалгуур: утас ✓ → WiFi IP ✓ → бүртгэл
- */
 router.post("/burtgel", mobileOnlyGuard, wifiGuard, irtsBurtgel);
+router.get("/unuudriinIrtsAvya", tokenShalgakh, getUnuudriinIrts);
 
 module.exports = router;
