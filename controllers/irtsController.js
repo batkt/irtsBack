@@ -198,12 +198,24 @@ async function getUnuudriinIrts(req, res, next) {
 }
 
 async function checkWifi(req, res) {
+  const { db } = require("zevbackv2");
+  const isMobileCheck =
+    /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+      req.body.tokhiromjiinMedeelel?.userAgent,
+    );
+
+  if (!isMobileCheck)
+    return res.json({
+      zuvshurulusen: false,
+      message: "Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой",
+    });
   const { ip, buttonState, barilgiinId } = req.body;
 
   try {
-    const wifiConfig = await WifiConfig(
-      req.body.tukhainBaaziinKholbolt,
-    ).findOne({ barilgiinId: barilgiinId, idevkhitei: true });
+    const wifiConfig = await WifiConfig(db.erunkhiiKholbolt).findOne({
+      barilgiinId: barilgiinId,
+      idevkhitei: true,
+    });
 
     if (!wifiConfig) {
       return res.json({
