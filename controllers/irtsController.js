@@ -188,6 +188,7 @@ async function getUnuudriinIrts(req, res, next) {
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       baiguullagiinId: req.body.baiguullagiinId,
     });
+    console.log("[getUnuudriinIrts] unuudriinIrts", unuudriinIrts);
     res.send(unuudriinIrts);
   } catch (err) {
     console.log("[getUnuudriinIrts] err", err);
