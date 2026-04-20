@@ -15,10 +15,12 @@ dotenv.config({ path: "./tokhirgoo/tokhirgoo.env" });
 
 const baiguullagaRoute = require("./routes/baiguullagaRoute");
 const ajiltanRoute = require("./routes/ajiltanRoute");
+const irtsRoutes = require("./routes/irtsRoutes");
 
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middleware/aldaaBarigch");
+const irts = require("./models/irts");
 process.setMaxListeners(0);
 process.env.UV_THREADPOOL_SIZE = 20;
 server.listen(8086);
@@ -47,6 +49,7 @@ app.use(
 
 app.use(baiguullagaRoute);
 app.use(ajiltanRoute);
+app.use(irtsRoutes);
 app.use(aldaaBarigch);
 
 (async () => {
