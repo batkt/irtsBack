@@ -190,6 +190,7 @@ async function getUnuudriinIrts(req, res, next) {
     });
     res.send(unuudriinIrts);
   } catch (err) {
+    console.log("[getUnuudriinIrts] err", err);
     next(err);
   }
 }
