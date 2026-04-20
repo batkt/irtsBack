@@ -63,6 +63,14 @@ const irtsSchema = new Schema(
     baiguullagiinId: String,
     barilgiinId: String,
     uurSalbartBurtguulsen: Boolean,
+    tokhiromjiinMedeelel: {
+      userAgent: String,
+      screenWidth: Number,
+      screenHeight: Number,
+      language: String,
+      platform: String,
+      isOnline: Boolean,
+    },
   },
   {
     timestamps: true,

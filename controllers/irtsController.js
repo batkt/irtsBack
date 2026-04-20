@@ -198,12 +198,12 @@ async function getUnuudriinIrts(req, res, next) {
 }
 
 async function checkWifi(req, res) {
-  const { ip, buttonState } = req.body;
+  const { ip, buttonState, barilgiinId } = req.body;
 
   try {
     const wifiConfig = await WifiConfig(
       req.body.tukhainBaaziinKholbolt,
-    ).findOne({ idevkhitei: true });
+    ).findOne({ barilgiinId: barilgiinId, idevkhitei: true });
 
     if (!wifiConfig) {
       return res.json({
@@ -226,4 +226,105 @@ async function checkWifi(req, res) {
   }
 }
 
-module.exports = { irtsBurtgel, getUnuudriinIrts, checkWifi };
+async function irtsBurtguulye(req, res, next) {
+  try {
+    const {
+      baiguullagiinId,
+      barilgiinId,
+      ip,
+      tokhiromjiinMedeelel,
+      tukhainBaaziinKholbolt,
+      nevtersenAjiltniiToken,
+    } = req.body;
+    // UserAgent-аас утасны төрөл тодорхойлох
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(
+      tokhiromjiinMedeelel.userAgent,
+    );
+    const isAndroid = /Android/i.test(tokhiromjiinMedeelel.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(tokhiromjiinMedeelel.userAgent);
+    const isMobileCheck =
+      /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+        tokhiromjiinMedeelel.userAgent,
+      );
+    const { db } = require("zevbackv2");
+    if (!isMobileCheck)
+      throw new aldaa("Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой");
+    var unuudur = new Date();
+    var unuudriinIrts = await Irts(tukhainBaaziinKholbolt).findOne({
+      ognoo: new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+      ),
+      ajiltniiId: nevtersenAjiltniiToken.id,
+      baiguullagiinId: baiguullagiinId,
+      barilgiinId: barilgiinId,
+    });
+    if (unuudriinIrts) throw new Error("Өнөөдрийн ирц бүртгэгдсэн байна!");
+    const wifiConfig = await WifiConfig(tukhainBaaziinKholbolt).findOne({
+      barilgiinId: barilgiinId,
+      idevkhitei: true,
+    });
+
+    if (!wifiConfig) {
+      return res.json({
+        zuvshurulusen: false,
+        message: "WiFi тохиргоо олдсонгүй",
+      });
+    }
+
+    // Зөвхөн тодорхой IP шалгах
+    const ipMatch = wifiConfig.zuvshurulusenIp.includes(ip);
+
+    if (!ipMatch) {
+      return res.json({ zuvshurulusen: false, message: "Зөвшөөрөгдөөгүй IP" });
+    }
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      baiguullagiinId,
+    );
+    var barilga = await baiguullaga.barilguud.find((a) => a._id == barilgiinId);
+    var ajillakhUdur = barilga.ajillakhUdruud.find((a) => {
+      return a.udruud.includes(unuudur.getDay().toString());
+    });
+    var ekhlekhTsag = new Date(
+      unuudur.getFullYear(),
+      unuudur.getMonth(),
+      unuudur.getDate(),
+      ajillakhUdur.neekhTsag.substring(0, 2),
+      ajillakhUdur.neekhTsag.substring(3),
+      0,
+      0,
+    );
+    var irts = new Irts(tukhainBaaziinKholbolt)();
+    irts.ajiltniiId = nevtersenAjiltniiToken.id;
+    irts.ajiltniiNer = nevtersenAjiltniiToken.ner;
+    irts.irsenTsag = new Date();
+    irts.ognoo = new Date(
+      unuudur.getFullYear(),
+      unuudur.getMonth(),
+      unuudur.getDate(),
+    );
+    if (irts.irsenTsag > ekhlekhTsag) {
+      var khotsorson = irts.irsenTsag - ekhlekhTsag;
+      irts.khotsorsonMinut = Math.floor(khotsorson / 1000 / 60);
+      irts.turul = "khotsorson";
+    } else if (irts.irsenTsag < ekhlekhTsag) {
+      var ertIrsen = ekhlekhTsag - irts.irsenTsag;
+      irts.ertIrsenMinut = Math.floor(ertIrsen / 1000 / 60);
+    }
+    irts.baiguullagiinId = baiguullagiinId;
+    irts.barilgiinId = barilgiinId;
+    irts.tokhiromjiinMedeelel = {
+      ...tokhiromjiinMedeelel,
+      isMobile,
+      isAndroid,
+      isIOS,
+    };
+    irts.save();
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { irtsBurtgel, getUnuudriinIrts, checkWifi, irtsBurtguulye };
