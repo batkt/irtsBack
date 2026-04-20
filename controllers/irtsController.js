@@ -1,5 +1,6 @@
 const Irts = require("../models/irts");
 const WifiConfig = require("../models/wifiConfig");
+const Baiguullaga = require("../models/baiguullaga");
 const { validateToken } = require("../services/qrService");
 
 /**
