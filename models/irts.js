@@ -61,7 +61,7 @@ const irtsSchema = new Schema(
     burtgesenAjiltniiId: String,
     burtgesenAjiltniiNer: String,
     baiguullagiinId: String,
-    salbariinId: String,
+    barilgiinId: String,
     uurSalbartBurtguulsen: Boolean,
   },
   {

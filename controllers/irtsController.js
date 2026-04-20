@@ -5,7 +5,7 @@ const { validateToken } = require("../services/qrService");
 /**
  * Ирц бүртгэх
  * POST /api/irts/burtgel
- * Body: { token, ajiltniiId, ajiltniiNer, bairlal: [lat, lng], baiguullagiinId, salbariinId }
+ * Body: { token, ajiltniiId, ajiltniiNer, bairlal: [lat, lng], baiguullagiinId, barilgiinId }
  */
 async function irtsBurtgel(req, res) {
   try {
@@ -15,7 +15,7 @@ async function irtsBurtgel(req, res) {
       ajiltniiNer,
       bairlal,
       baiguullagiinId,
-      salbariinId,
+      barilgiinId,
     } = req.body;
 
     // 1. QR token шалгах
@@ -87,7 +87,7 @@ async function irtsBurtgel(req, res) {
             orsonTurul: burtgesenTurul,
             tuluv: khotsorsonMinut > 0 ? "khotorson" : "tsag_tuhaidaa",
             baiguullagiinId,
-            salbariinId,
+            barilgiinId,
           });
         }
         await bichleg.save();
