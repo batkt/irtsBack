@@ -273,7 +273,7 @@ async function irtsBurtguulye(req, res, next) {
       barilgiinId: barilgiinId,
     });
     if (unuudriinIrts) throw new Error("Өнөөдрийн ирц бүртгэгдсэн байна!");
-    const wifiConfig = await WifiConfig(tukhainBaaziinKholbolt).findOne({
+    const wifiConfig = await WifiConfig(db.erunkhiiKholbolt).findOne({
       barilgiinId: barilgiinId,
       idevkhitei: true,
     });
