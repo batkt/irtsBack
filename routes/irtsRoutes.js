@@ -14,6 +14,6 @@ const {
 } = require("zevbackv2");
 
 router.post("/burtgel", mobileOnlyGuard, wifiGuard, irtsBurtgel);
-router.get("/unuudriinIrtsAvya", tokenShalgakh, getUnuudriinIrts);
+router.post("/unuudriinIrtsAvya", tokenShalgakh, getUnuudriinIrts);
 
 module.exports = router;
