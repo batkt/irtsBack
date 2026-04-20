@@ -179,7 +179,7 @@ async function getUnuudriinIrts(req, res, next) {
     if (!req.body.nevtersenAjiltniiToken || !req.body.nevtersenAjiltniiToken.id)
       throw Error("Токены мэдээлэл дутуу байна!");
     var unuudur = new Date();
-    var unuudriinIrts = await Irts.findOne({
+    var unuudriinIrts = await Irts(req.body.tukhainBaaziinKholbolt).findOne({
       ognoo: new Date(
         unuudur.getFullYear(),
         unuudur.getMonth(),
