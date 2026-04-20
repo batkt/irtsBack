@@ -1,4 +1,5 @@
 const Irts = require("../models/irts");
+const WifiConfig = require("../models/wifiConfig");
 const { validateToken } = require("../services/qrService");
 
 /**
@@ -196,4 +197,33 @@ async function getUnuudriinIrts(req, res, next) {
   }
 }
 
-module.exports = { irtsBurtgel, getUnuudriinIrts };
+async function checkWifi(req, res) {
+  const { ip, buttonState } = req.body;
+
+  try {
+    const wifiConfig = await WifiConfig(
+      req.body.tukhainBaaziinKholbolt,
+    ).findOne({ idevkhitei: true });
+
+    if (!wifiConfig) {
+      return res.json({
+        zuvshurulusen: false,
+        message: "WiFi тохиргоо олдсонгүй",
+      });
+    }
+
+    // Зөвхөн тодорхой IP шалгах
+    const ipMatch = wifiConfig.zuvshurulusenIp.includes(ip);
+
+    if (!ipMatch) {
+      return res.json({ zuvshurulusen: false, message: "Зөвшөөрөгдөөгүй IP" });
+    }
+
+    return res.json({ zuvshurulusen: true, ip });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ zuvshurulusen: false, message: "Серверийн алдаа" });
+  }
+}
+
+module.exports = { irtsBurtgel, getUnuudriinIrts, checkWifi };

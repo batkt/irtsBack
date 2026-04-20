@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   irtsBurtgel,
   getUnuudriinIrts,
+  checkWifi,
 } = require("../controllers/irtsController");
 const { mobileOnlyGuard, wifiGuard } = require("../middleware/guards");
 const {
@@ -15,5 +16,6 @@ const {
 
 router.post("/burtgel", mobileOnlyGuard, wifiGuard, irtsBurtgel);
 router.post("/unuudriinIrtsAvya", tokenShalgakh, getUnuudriinIrts);
+router.post("/check-wifi", tokenShalgakh, checkWifi);
 
 module.exports = router;
