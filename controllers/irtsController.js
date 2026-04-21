@@ -2,6 +2,7 @@ const Irts = require("../models/irts");
 const WifiConfig = require("../models/wifiConfig");
 const Baiguullaga = require("../models/baiguullaga");
 const { validateToken } = require("../services/qrService");
+const { allowedIPs } = require("../config/allowedIPs");
 
 /**
  * Ирц бүртгэх
@@ -136,8 +137,8 @@ async function irtsBurtgel(req, res) {
           });
         }
         // Цайны завсарлага тэмдэглэх
-        if (!bichleg.tsaiOrsonTsag) {
-          bichleg.tsaiOrsonTsag = odoo;
+        if (!bichleg.tsainiiIrsenTsag) {
+          bichleg.tsainiiIrsenTsag = odoo;
           await bichleg.save();
         }
         return res.json({
@@ -149,13 +150,13 @@ async function irtsBurtgel(req, res) {
       }
 
       case "tsai_garoh": {
-        if (!bichleg?.tsaiOrsonTsag) {
+        if (!bichleg?.tsainiiIrsenTsag) {
           return res.status(400).json({
             success: false,
             message: "Цайны орсон бүртгэл олдсонгүй.",
           });
         }
-        bichleg.tsaiGarsanTsag = odoo;
+        bichleg.tsainiiGarsanTsag = odoo;
         await bichleg.save();
         return res.json({
           success: true,
@@ -248,7 +249,40 @@ async function irtsBurtguulye(req, res, next) {
       tokhiromjiinMedeelel,
       tukhainBaaziinKholbolt,
       nevtersenAjiltniiToken,
+      ajiltan,
     } = req.body;
+
+    if (ajiltan?.erkh !== "Admin") {
+      // IP зөв авах
+      const rawIP =
+        req.headers["x-real-ip"] || // Nginx жинхэнэ IP
+        req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+        req.socket.remoteAddress;
+
+      const ip = rawIP?.replace("::ffff:", "");
+
+      console.log("X-Real-IP:", req.headers["x-real-ip"]);
+      console.log("X-Forwarded-For:", req.headers["x-forwarded-for"]);
+      console.log("Жинхэнэ IP:", ip);
+
+      const isMobile =
+        /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+          tokhiromjiinMedeelel?.userAgent,
+        );
+      console.log("IP: ", ip);
+      console.log("isMobile: ", isMobile);
+      const geoRes = await fetch(`http://ip-api.com/json/${ip}`);
+      const geo = await geoRes.json();
+      console.log("Улс:", geo.country);
+      console.log("Хот:", geo.city);
+      console.log("ISP (интернэт үүсгэл):", geo.isp); // "MobiCom", "Unitel" гэх мэт
+      console.log("Байгууллага:", geo.org);
+      if (!isMobile)
+        throw new aldaa("Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой");
+      if (!allowedIPs.includes(ip))
+        throw new aldaa("Зөвхөн оффисын сүлжээнээс нэвтрэх боломжтой");
+    }
+
     // UserAgent-аас утасны төрөл тодорхойлох
     const isMobile = /iPhone|iPad|iPod|Android/i.test(
       tokhiromjiinMedeelel.userAgent,
@@ -340,4 +374,123 @@ async function irtsBurtguulye(req, res, next) {
   }
 }
 
-module.exports = { irtsBurtgel, getUnuudriinIrts, checkWifi, irtsBurtguulye };
+async function garsanTsagBurtguulye(req, res, next) {
+  try {
+    const {
+      baiguullagiinId,
+      barilgiinId,
+      ip,
+      tokhiromjiinMedeelel,
+      tukhainBaaziinKholbolt,
+      nevtersenAjiltniiToken,
+      ajiltan,
+    } = req.body;
+    if (ajiltan?.erkh !== "Admin") {
+      // IP зөв авах
+      const rawIP =
+        req.headers["x-real-ip"] || // Nginx жинхэнэ IP
+        req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+        req.socket.remoteAddress;
+
+      const ip = rawIP?.replace("::ffff:", "");
+
+      console.log("X-Real-IP:", req.headers["x-real-ip"]);
+      console.log("X-Forwarded-For:", req.headers["x-forwarded-for"]);
+      console.log("Жинхэнэ IP:", ip);
+
+      const isMobile =
+        /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+          tokhiromjiinMedeelel?.userAgent,
+        );
+      console.log("IP: ", ip);
+      console.log("isMobile: ", isMobile);
+      const geoRes = await fetch(`http://ip-api.com/json/${ip}`);
+      const geo = await geoRes.json();
+      console.log("Улс:", geo.country);
+      console.log("Хот:", geo.city);
+      console.log("ISP (интернэт үүсгэл):", geo.isp); // "MobiCom", "Unitel" гэх мэт
+      console.log("Байгууллага:", geo.org);
+      if (!isMobile)
+        throw new aldaa("Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой");
+      if (!allowedIPs.includes(ip))
+        throw new aldaa("Зөвхөн оффисын сүлжээнээс нэвтрэх боломжтой");
+    }
+    // UserAgent-аас утасны төрөл тодорхойлох
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(
+      tokhiromjiinMedeelel.userAgent,
+    );
+    const isAndroid = /Android/i.test(tokhiromjiinMedeelel.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(tokhiromjiinMedeelel.userAgent);
+    const isMobileCheck =
+      /Android|iPhone|iPad|iPod|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+        tokhiromjiinMedeelel.userAgent,
+      );
+    const { db } = require("zevbackv2");
+    if (!isMobileCheck)
+      throw new aldaa("Зөвхөн утасны интернэт хөтчөөр нэвтрэх боломжтой");
+    var unuudur = new Date();
+    var unuudriinIrts = await Irts(tukhainBaaziinKholbolt).findOne({
+      ognoo: new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+      ),
+      ajiltniiId: nevtersenAjiltniiToken.id,
+      baiguullagiinId: baiguullagiinId,
+      barilgiinId: barilgiinId,
+    });
+    if (unuudriinIrts && unuudriinIrts.yawsanTsag)
+      throw new Error("Өнөөдрийн гарсан цаг бүртгэгдсэн байна!");
+    else if (!unuudriinIrts)
+      throw new Error(
+        "Өнөөдрийн ирсэн цаг бүртгэгдээгүй тул гарсан цаг бүртгэх боломжгүй!",
+      );
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
+      .findById(baiguullagiinId)
+      .lean();
+    var barilga = await baiguullaga.barilguud.find((a) => a._id == barilgiinId);
+    var ajillakhUdur = barilga.ajillakhUdruud.find((a) => {
+      return a.udruud.includes(unuudur.getDay().toString());
+    });
+    var tarsanTsag = new Date();
+    unuudriinIrts.yawsanTsag = tarsanTsag;
+    var khaakhTsag = new Date(
+      unuudur.getFullYear(),
+      unuudur.getMonth(),
+      unuudur.getDate(),
+      ajillakhUdur.khaakhTsag.substring(0, 2),
+      ajillakhUdur.khaakhTsag.substring(3),
+      0,
+      0,
+    );
+    if (tarsanTsag > khaakhTsag)
+      unuudriinIrts.ajillasanMinut =
+        Math.floor(khaakhTsag / 1000 / 60) -
+        Math.floor(unuudriinIrts.irsenTsag / 1000 / 60);
+    else {
+      if (unuudriinIrts.khotsorsonMinut == 0) unuudriinIrts.tuluv == "kheviin";
+      unuudriinIrts.ajillasanMinut =
+        Math.floor(tarsanTsag / 1000 / 60) -
+        Math.floor(unuudriinIrts.irsenTsag / 1000 / 60);
+    }
+    unuudriinIrts.tokhiromjiinMedeelelGarsan = {
+      ...tokhiromjiinMedeelel,
+      isMobile,
+      isAndroid,
+      isIOS,
+    };
+    unuudriinIrts.isNew = false;
+    unuudriinIrts.save();
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  irtsBurtgel,
+  getUnuudriinIrts,
+  checkWifi,
+  irtsBurtguulye,
+  garsanTsagBurtguulye,
+};
