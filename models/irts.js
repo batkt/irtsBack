@@ -16,7 +16,15 @@ const irtsSchema = new Schema(
       type: Number,
       default: 0,
     },
+    khotsorsonMinutTsainiiTsag: {
+      type: Number,
+      default: 0,
+    },
     ertIrsenMinut: {
+      type: Number,
+      default: 0,
+    },
+    ertIrsenMinutTsainiiTsag: {
       type: Number,
       default: 0,
     },

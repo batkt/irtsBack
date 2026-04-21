@@ -250,8 +250,9 @@ async function irtsBurtguulye(req, res, next) {
       tukhainBaaziinKholbolt,
       nevtersenAjiltniiToken,
       ajiltan,
+      turul,
     } = req.body;
-
+    console.log("irtsBurtguulye turul: ", turul);
     if (ajiltan?.erkh !== "Admin") {
       // IP зөв авах
       const rawIP =
@@ -384,7 +385,9 @@ async function garsanTsagBurtguulye(req, res, next) {
       tukhainBaaziinKholbolt,
       nevtersenAjiltniiToken,
       ajiltan,
+      turul,
     } = req.body;
+    console.log("irtsBurtguulye turul: ", turul);
     if (ajiltan?.erkh !== "Admin") {
       // IP зөв авах
       const rawIP =
@@ -452,33 +455,73 @@ async function garsanTsagBurtguulye(req, res, next) {
     var ajillakhUdur = barilga.ajillakhUdruud.find((a) => {
       return a.udruud.includes(unuudur.getDay().toString());
     });
-    var tarsanTsag = new Date();
-    unuudriinIrts.yawsanTsag = tarsanTsag;
-    var khaakhTsag = new Date(
-      unuudur.getFullYear(),
-      unuudur.getMonth(),
-      unuudur.getDate(),
-      ajillakhUdur.khaakhTsag.substring(0, 2),
-      ajillakhUdur.khaakhTsag.substring(3),
-      0,
-      0,
-    );
-    if (tarsanTsag > khaakhTsag)
-      unuudriinIrts.ajillasanMinut =
-        Math.floor(khaakhTsag / 1000 / 60) -
-        Math.floor(unuudriinIrts.irsenTsag / 1000 / 60);
-    else {
-      if (unuudriinIrts.khotsorsonMinut == 0) unuudriinIrts.tuluv == "kheviin";
-      unuudriinIrts.ajillasanMinut =
-        Math.floor(tarsanTsag / 1000 / 60) -
-        Math.floor(unuudriinIrts.irsenTsag / 1000 / 60);
+    if (turul === "garakh") {
+      var tarsanTsag = new Date();
+      unuudriinIrts.yawsanTsag = tarsanTsag;
+      var khaakhTsag = new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+        ajillakhUdur.khaakhTsag.substring(0, 2),
+        ajillakhUdur.khaakhTsag.substring(3),
+        0,
+        0,
+      );
+      if (tarsanTsag > khaakhTsag)
+        unuudriinIrts.ajillasanMinut =
+          Math.floor(khaakhTsag / 1000 / 60) -
+          Math.floor(unuudriinIrts.irsenTsag / 1000 / 60);
+      else {
+        if (unuudriinIrts.khotsorsonMinut == 0)
+          unuudriinIrts.tuluv == "kheviin";
+        unuudriinIrts.ajillasanMinut =
+          Math.floor(tarsanTsag / 1000 / 60) -
+          Math.floor(unuudriinIrts.irsenTsag / 1000 / 60);
+      }
+      unuudriinIrts.tokhiromjiinMedeelelGarsan = {
+        ...tokhiromjiinMedeelel,
+        isMobile,
+        isAndroid,
+        isIOS,
+      };
+    } else if (turul === "tsainiiGarakh") {
+      unuudriinIrts.tsainiiGarsanTsag = new Date();
+      unuudriinIrts.tokhiromjiinMedeelelTsainiiTsagGarsan = {
+        ...tokhiromjiinMedeelel,
+        isMobile,
+        isAndroid,
+        isIOS,
+      };
+    } else if (turul === "tsainiiOrokh") {
+      unuudriinIrts.tsainiiIrsenTsag = new Date();
+      var khaakhTsag = new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+        ajillakhUdur.tsainiiKhaakhTsag.substring(0, 2),
+        ajillakhUdur.tsainiiKhaakhTsag.substring(3),
+        0,
+        0,
+      );
+      if (unuudriinIrts.tsainiiIrsenTsag > khaakhTsag) {
+        var khotsorson = unuudriinIrts.tsainiiIrsenTsag - khaakhTsag;
+        unuudriinIrts.khotsorsonMinutTsainiiTsag = Math.floor(
+          khotsorson / 1000 / 60,
+        );
+        unuudriinIrts.turul = "khotsorsonTsainiiTsag";
+      } else if (unuudriinIrts.tsainiiIrsenTsag < khaakhTsag) {
+        var ertIrsen = khaakhTsag - unuudriinIrts.tsainiiIrsenTsag;
+        unuudriinIrts.ertIrsenMinutTsainiiTsag = Math.floor(
+          ertIrsen / 1000 / 60,
+        );
+      }
+      unuudriinIrts.tokhiromjiinMedeelelTsainiiTsagIrsen = {
+        ...tokhiromjiinMedeelel,
+        isMobile,
+        isAndroid,
+        isIOS,
+      };
     }
-    unuudriinIrts.tokhiromjiinMedeelelGarsan = {
-      ...tokhiromjiinMedeelel,
-      isMobile,
-      isAndroid,
-      isIOS,
-    };
     unuudriinIrts.isNew = false;
     unuudriinIrts.save();
     res.send("Amjilttai");

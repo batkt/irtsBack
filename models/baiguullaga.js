@@ -87,7 +87,7 @@ const baiguullagaSchema = new Schema(
             neekhTsag: String,
             khaakhTsag: String,
             tsainiiNeekhTsag: String,
-            tsainiiTsag: Number,
+            tsainiiKhaakhTsag: Number,
             darakhKhugatsaa: Number,
             udruud: Array,
           },
