@@ -684,6 +684,86 @@ async function irtsZasya(req, res, next) {
   }
 }
 
+async function irtsiinMedeeSaraarAvya(req, res, next) {
+  try {
+    var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    var khariu = await Irts(req.body.tukhainBaaziinKholbolt).aggregate([
+      {
+        $match: {
+          ognoo: {
+            $gte: ekhlekhOgnoo,
+            $lte: duusakhOgnoo,
+          },
+          baiguullagiinId: req.body.baiguullagiinId,
+          salbariinId: req.body.salbariinId,
+        },
+      },
+      {
+        $addFields: {
+          objectId: {
+            $toObjectId: "$ajiltniiId",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "ajiltan",
+          let: {
+            ajiltniiId: "$objectId",
+            baiguullagiinId: "$baiguullagiinId",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$_id", "$$ajiltniiId"] },
+                    { $eq: ["$baiguullagiinId", "$$baiguullagiinId"] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "ajiltan",
+        },
+      },
+
+      {
+        $project: {
+          ajiltniiNer: 1,
+          ognoo: 1,
+          tuluv: 1,
+          ajiltan: { $arrayElemAt: ["$ajiltan", 0] },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            ajiltniiId: "$ajiltan._id",
+            ajiltniiNer: "$ajiltniiNer",
+            zurgiinNer: "$ajiltan.zurgiinNer",
+          },
+          irts: {
+            $push: {
+              udur: {
+                $dayOfMonth: {
+                  date: "$ognoo",
+                  timezone: "Asia/Ulaanbaatar",
+                },
+              },
+              tuluv: "$tuluv",
+            },
+          },
+        },
+      },
+    ]);
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   irtsBurtgel,
   getUnuudriinIrts,
@@ -692,4 +772,5 @@ module.exports = {
   garsanTsagBurtguulye,
   ajillakhTsagAvya,
   irtsZasya,
+  irtsiinMedeeSaraarAvya,
 };
