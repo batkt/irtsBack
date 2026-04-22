@@ -3,6 +3,7 @@ const WifiConfig = require("../models/wifiConfig");
 const Baiguullaga = require("../models/baiguullaga");
 const { validateToken } = require("../services/qrService");
 const { allowedIPs } = require("../config/allowedIPs");
+const { db } = require("../models/qrToken");
 
 /**
  * Ирц бүртгэх
@@ -530,10 +531,165 @@ async function garsanTsagBurtguulye(req, res, next) {
   }
 }
 
+async function ajillakhTsagAvya(req, res, next) {
+  try {
+    const { db } = require("zevbackv2");
+    if (!req.body.barilgiinId) throw new Error("Салбар бөглөнө үү!");
+    if (!req.body.ognoo) throw new Error("Огноо бөглөнө үү!");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
+      .findById(req.body.baiguullagiinId)
+      .lean();
+    var barilga = {};
+    var ognoo = new Date(req.body.ognoo);
+    barilga = await baiguullaga.barilguud.find(
+      (a) => a._id == req.body.barilgiinId,
+    );
+    var ajillakhUdur = barilga.ajillakhUdruud.find((a) => {
+      return a.udruud.includes(ognoo.getDay().toString());
+    });
+    res.send(ajillakhUdur);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function irtsZasya(req, res, next) {
+  try {
+    const { db } = require("zevbackv2");
+    if (!req.body.ognoo) throw Error("Огноо сонгоогүй байна!");
+    var ognoo = new Date(req.body.ognoo);
+    var irts = await Irts(req.body.tukhainBaaziinKholbolt).findOne({
+      ognoo: ognoo,
+      ajiltniiId: req.body.ajiltniiId,
+      barilgiinId: req.body.barilgiinId,
+      baiguullagiinId: req.body.baiguullagiinId,
+    });
+    if (!irts) {
+      irts = new Irts(req.body.tukhainBaaziinKholbolt)();
+      irts.ajiltniiId = req.body.ajiltniiId;
+      irts.ajiltniiNer = req.body.ajiltniiNer;
+      irts.ognoo = ognoo;
+      irts.barilgiinId = req.body.barilgiinId;
+      irts.baiguullagiinId = req.body.baiguullagiinId;
+    } else irts.isNew = false;
+    if (req.body.irsenTsag) {
+      irts.irsenTsag = new Date(req.body.irsenTsag);
+      irts.orsonTurul = {
+        burtgesenTsag: new Date(),
+        ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+        ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      };
+    }
+    if (req.body.yawsanTsag) {
+      irts.yawsanTsag = new Date(req.body.yawsanTsag);
+      irts.garsanTurul = {
+        burtgesenTsag: new Date(),
+        ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+        ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      };
+    }
+    if (req.body.chuluuniiTurul) {
+      irts.chuluuniiTurul = {
+        burtgesenTsag: new Date(),
+        tailbar: req.body.chuluuniiTurul.tailbar,
+        ekhlekhOgnoo: new Date(req.body.chuluuniiTurul.ekhlekhOgnoo),
+        duusakhOgnoo: new Date(req.body.chuluuniiTurul.duusakhOgnoo),
+        ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+        ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      };
+    } else irts.chuluuniiTurul = {};
+    if (req.body.tasalsanTurul) {
+      irts.tasalsanTurul = {
+        burtgesenTsag: new Date(),
+        tailbar: req.body.tasalsanTurul.tailbar,
+        ekhlekhOgnoo: new Date(req.body.tasalsanTurul.ekhlekhOgnoo),
+        duusakhOgnoo: new Date(req.body.tasalsanTurul.duusakhOgnoo),
+        ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+        ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      };
+    } else irts.tasalsanTurul = {};
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
+      .findById(req.body.baiguullagiinId)
+      .lean();
+    var barilga = {};
+    barilga = await baiguullaga.barilguud.find(
+      (a) => a._id == req.body.barilgiinId,
+    );
+    var ajillakhUdur = barilga.ajillakhUdruud.find((a) => {
+      return a.udruud.includes(ognoo.getDay().toString());
+    });
+    var ekhlekhTsag = new Date(
+      ognoo.getFullYear(),
+      ognoo.getMonth(),
+      ognoo.getDate(),
+      ajillakhUdur.neekhTsag.substring(0, 2),
+      ajillakhUdur.neekhTsag.substring(3),
+      0,
+      0,
+    );
+
+    var khaakhTsag = new Date(
+      ognoo.getFullYear(),
+      ognoo.getMonth(),
+      ognoo.getDate(),
+      ajillakhUdur.khaakhTsag.substring(0, 2),
+      ajillakhUdur.khaakhTsag.substring(3),
+      0,
+      0,
+    );
+    if (irts.irsenTsag && irts.yawsanTsag) {
+      if (irts.irsenTsag > ekhlekhTsag) {
+        var khotsorson = irts.irsenTsag - ekhlekhTsag;
+        irts.khotsorsonMinut = Math.floor(khotsorson / 1000 / 60);
+        irts.ertIrsenMinut = 0;
+        if (irts.yawsanTsag > khaakhTsag)
+          irts.ajillasanMinut =
+            Math.floor(khaakhTsag / 1000 / 60) -
+            Math.floor(irts.irsenTsag / 1000 / 60);
+        else
+          irts.ajillasanMinut =
+            Math.floor(irts.yawsanTsag / 1000 / 60) -
+            Math.floor(irts.irsenTsag / 1000 / 60);
+        irts.tuluv = "khotsorson";
+      } else if (irts.irsenTsag <= ekhlekhTsag) {
+        var ertIrsen = ekhlekhTsag - irts.irsenTsag;
+        irts.khotsorsonMinut = 0;
+        irts.ertIrsenMinut = Math.floor(ertIrsen / 1000 / 60);
+        irts.tuluv = "kheviin";
+        if (irts.yawsanTsag > khaakhTsag)
+          irts.ajillasanMinut =
+            Math.floor(khaakhTsag / 1000 / 60) -
+            Math.floor(ekhlekhTsag / 1000 / 60);
+        else
+          irts.ajillasanMinut =
+            Math.floor(irts.yawsanTsag / 1000 / 60) -
+            Math.floor(ekhlekhTsag / 1000 / 60);
+      }
+    }
+    if (irts.ajillasanMinut < 0) irts.ajillasanMinut = 0;
+    if (irts.khotsorsonMinut > 0) {
+      if (
+        (irts.chuluuniiTurul && irts.chuluuniiTurul.ekhlekhOgnoo) ||
+        (irts.tasalsanTurul && irts.tasalsanTurul.ekhlekhOgnoo)
+      )
+        irts.tuluv = "hagas";
+    } else if (irts.chuluuniiTurul && irts.chuluuniiTurul.ekhlekhOgnoo)
+      irts.tuluv = "chuluu";
+    else if (irts.tasalsanTurul && irts.tasalsanTurul.ekhlekhOgnoo)
+      irts.tuluv = "tasalsan";
+    await irts.save();
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   irtsBurtgel,
   getUnuudriinIrts,
   checkWifi,
   irtsBurtguulye,
   garsanTsagBurtguulye,
+  ajillakhTsagAvya,
+  irtsZasya,
 };

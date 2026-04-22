@@ -6,6 +6,8 @@ const {
   checkWifi,
   irtsBurtguulye,
   garsanTsagBurtguulye,
+  ajillakhTsagAvya,
+  irtsZasya,
 } = require("../controllers/irtsController");
 const { mobileOnlyGuard, wifiGuard } = require("../middleware/guards");
 const {
@@ -21,5 +23,7 @@ router.post("/unuudriinIrtsAvya", tokenShalgakh, getUnuudriinIrts);
 router.post("/check-wifi", tokenShalgakh, checkWifi);
 router.post("/irtsBurtguulye", tokenShalgakh, irtsBurtguulye);
 router.post("/garsanTsagBurtguulye", tokenShalgakh, garsanTsagBurtguulye);
+router.post("/ajillakhTsagAvya", tokenShalgakh, ajillakhTsagAvya);
+router.post("/irtsZasya", tokenShalgakh, irtsZasya);
 
 module.exports = router;
