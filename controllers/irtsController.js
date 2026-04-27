@@ -589,33 +589,33 @@ async function irtsZasya(req, res, next) {
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       };
     }
+    var ekhlekhOgnoo = new Date(req.body.chuluuniiTurul.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(req.body.chuluuniiTurul.duusakhOgnoo);
     if (req.body.chuluuniiTurul) {
+      var chuluuniiMinut = duusakhOgnoo - ekhlekhOgnoo;
+      chuluuniiMinut = Math.floor(chuluuniiMinut / 1000 / 60);
       irts.chuluuniiTurul = {
         burtgesenTsag: new Date(),
         tailbar: req.body.chuluuniiTurul.tailbar,
-        ekhlekhOgnoo: new Date(req.body.chuluuniiTurul.ekhlekhOgnoo),
-        duusakhOgnoo: new Date(req.body.chuluuniiTurul.duusakhOgnoo),
+        ekhlekhOgnoo: ekhlekhOgnoo,
+        duusakhOgnoo: duusakhOgnoo,
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+        chuluuniiMinut: chuluuniiMinut,
       };
-      var chuluuniiMinut =
-        irts.chuluuniiTurul?.duusakhOgnoo - irts.chuluuniiTurul?.ekhlekhOgnoo;
-      irts.chuluuniiTurul?.chuluuniiMinut = Math.floor(
-        chuluuniiMinut / 1000 / 60,
-      );
     } else irts.chuluuniiTurul = {};
     if (req.body.tasalsanTurul) {
+      var tasalsanMinut = duusakhOgnoo - ekhlekhOgnoo;
+      tasalsanMinut = Math.floor(tasalsanMinut / 1000 / 60);
       irts.tasalsanTurul = {
         burtgesenTsag: new Date(),
         tailbar: req.body.tasalsanTurul.tailbar,
-        ekhlekhOgnoo: new Date(req.body.tasalsanTurul.ekhlekhOgnoo),
-        duusakhOgnoo: new Date(req.body.tasalsanTurul.duusakhOgnoo),
+        ekhlekhOgnoo: ekhlekhOgnoo,
+        duusakhOgnoo: duusakhOgnoo,
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+        tasalsanMinut: tasalsanMinut,
       };
-      var tasalsanTurul =
-        irts.tasalsanTurul?.duusakhOgnoo - irts.tasalsanTurul?.ekhlekhOgnoo;
-      irts.tasalsanTurul?.tasalsanMinut = Math.floor(tasalsanTurul / 1000 / 60);
     } else irts.tasalsanTurul = {};
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
       .findById(req.body.baiguullagiinId)
