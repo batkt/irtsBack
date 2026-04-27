@@ -598,6 +598,11 @@ async function irtsZasya(req, res, next) {
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       };
+      var chuluuniiMinut =
+        irts.chuluuniiTurul?.duusakhOgnoo - irts.chuluuniiTurul?.ekhlekhOgnoo;
+      irts.chuluuniiTurul?.chuluuniiMinut = Math.floor(
+        chuluuniiMinut / 1000 / 60,
+      );
     } else irts.chuluuniiTurul = {};
     if (req.body.tasalsanTurul) {
       irts.tasalsanTurul = {
@@ -608,6 +613,9 @@ async function irtsZasya(req, res, next) {
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       };
+      var tasalsanTurul =
+        irts.tasalsanTurul?.duusakhOgnoo - irts.tasalsanTurul?.ekhlekhOgnoo;
+      irts.tasalsanTurul?.tasalsanMinut = Math.floor(tasalsanTurul / 1000 / 60);
     } else irts.tasalsanTurul = {};
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
       .findById(req.body.baiguullagiinId)
