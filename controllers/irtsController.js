@@ -344,10 +344,10 @@ async function irtsBurtguulye(req, res, next) {
       0,
       0,
     );
-    console.log("ajiltan: ", ajiltan?.utas);
     var irts = new Irts(tukhainBaaziinKholbolt)();
     irts.ajiltniiId = nevtersenAjiltniiToken.id;
     irts.ajiltniiNer = nevtersenAjiltniiToken.ner;
+    irts.ajiltniiUtas = ajiltan?.utas || "";
     irts.irsenTsag = new Date();
     irts.ognoo = new Date(
       unuudur.getFullYear(),

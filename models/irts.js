@@ -7,6 +7,7 @@ const irtsSchema = new Schema(
   {
     ajiltniiId: String,
     ajiltniiNer: String,
+    ajiltniiUtas: String,
     ognoo: Date,
     irsenTsag: Date,
     yawsanTsag: Date,
