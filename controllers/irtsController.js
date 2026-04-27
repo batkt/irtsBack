@@ -344,6 +344,7 @@ async function irtsBurtguulye(req, res, next) {
       0,
       0,
     );
+    console.log("ajiltan: ", ajiltan?.utas);
     var irts = new Irts(tukhainBaaziinKholbolt)();
     irts.ajiltniiId = nevtersenAjiltniiToken.id;
     irts.ajiltniiNer = nevtersenAjiltniiToken.ner;

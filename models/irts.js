@@ -53,6 +53,7 @@ const irtsSchema = new Schema(
       ekhlekhOgnoo: Date,
       duusakhOgnoo: Date,
       burtgesenTsag: Date,
+      chuluuniiMinut: Number,
     },
     tasalsanTurul: {
       ajiltniiId: String,
@@ -61,6 +62,7 @@ const irtsSchema = new Schema(
       ekhlekhOgnoo: Date,
       duusakhOgnoo: Date,
       burtgesenTsag: Date,
+      tasalsanMinut: Number,
     },
     burtgesenOgnoo: {
       type: Date,
