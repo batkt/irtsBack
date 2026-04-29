@@ -589,9 +589,9 @@ async function irtsZasya(req, res, next) {
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       };
     }
-    var ekhlekhOgnoo = new Date(req.body.chuluuniiTurul.ekhlekhOgnoo);
-    var duusakhOgnoo = new Date(req.body.chuluuniiTurul.duusakhOgnoo);
     if (req.body.chuluuniiTurul) {
+      var ekhlekhOgnoo = new Date(req.body.chuluuniiTurul.ekhlekhOgnoo);
+      var duusakhOgnoo = new Date(req.body.chuluuniiTurul.duusakhOgnoo);
       var chuluuniiMinut = duusakhOgnoo - ekhlekhOgnoo;
       chuluuniiMinut = Math.floor(chuluuniiMinut / 1000 / 60);
       irts.chuluuniiTurul = {
@@ -605,6 +605,8 @@ async function irtsZasya(req, res, next) {
       };
     } else irts.chuluuniiTurul = {};
     if (req.body.tasalsanTurul) {
+      var ekhlekhOgnoo = new Date(req.body.tasalsanTurul.ekhlekhOgnoo);
+      var duusakhOgnoo = new Date(req.body.tasalsanTurul.duusakhOgnoo);
       var tasalsanMinut = duusakhOgnoo - ekhlekhOgnoo;
       tasalsanMinut = Math.floor(tasalsanMinut / 1000 / 60);
       irts.tasalsanTurul = {
