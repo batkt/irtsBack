@@ -4,6 +4,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const { validateToken } = require("../services/qrService");
 const { allowedIPs } = require("../config/allowedIPs");
 const { db } = require("../models/qrToken");
+const aldaa = require("../components/aldaa");
 
 /**
  * Ирц бүртгэх
