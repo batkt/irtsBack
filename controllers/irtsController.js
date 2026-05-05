@@ -503,7 +503,7 @@ async function garsanTsagBurtguulye(req, res, next) {
       const diffMs = now - new Date(unuudriinIrts.tsainiiGarsanTsag);
       const diffMinutes = diffMs / (1000 * 60);
       if (diffMinutes < 30) {
-        throw new aldaa("30 минут болоогүй байна");
+        throw new Error("30 минут болоогүй байна");
       }
       unuudriinIrts.tsainiiIrsenTsag = new Date();
       var khaakhTsag = new Date(
