@@ -495,6 +495,15 @@ async function garsanTsagBurtguulye(req, res, next) {
         isIOS,
       };
     } else if (turul === "tsainiiOrokh") {
+      const now = new Date();
+      if (!unuudriinIrts.tsainiiGarsanTsag) {
+        throw new aldaa("Эхлээд цайнд гарсан цаг байх ёстой");
+      }
+      const diffMs = now - new Date(unuudriinIrts.tsainiiGarsanTsag);
+      const diffMinutes = diffMs / (1000 * 60);
+      if (diffMinutes < 30) {
+        throw new aldaa("30 минут болоогүй байна");
+      }
       unuudriinIrts.tsainiiIrsenTsag = new Date();
       var khaakhTsag = new Date(
         unuudur.getFullYear(),
